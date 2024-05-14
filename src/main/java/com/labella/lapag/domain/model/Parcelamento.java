@@ -4,7 +4,6 @@ import com.labella.lapag.domain.validation.ValidationGroups;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
@@ -17,7 +16,6 @@ import org.hibernate.annotations.CascadeType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
