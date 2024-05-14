@@ -11,10 +11,14 @@ import jakarta.validation.groups.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -51,4 +55,8 @@ public class Parcelamento {
     @NotNull
     @Column(name = "primeiro_vencimento")
     private LocalDate primeiroVencimento;
+
+    @OneToMany(mappedBy = "parcelamento", fetch = FetchType.LAZY)
+    @Cascade(CascadeType.ALL)
+    private List<Parcelas> parcelas = new ArrayList<Parcelas>();
 }
