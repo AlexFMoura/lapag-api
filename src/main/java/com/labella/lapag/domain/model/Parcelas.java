@@ -1,5 +1,6 @@
 package com.labella.lapag.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,16 +23,20 @@ public class Parcelas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+
     private Integer parcela;
+
     @Column(name = "valor_parcela")
     private BigDecimal valorParcela;
+
     @Column(name = "data_vencimento")
     private LocalDate dataVencimento;
+
     @Column(name = "data_pagamento")
     private LocalDate dataPagamento;
-    @JoinColumn(name = "parcelamento_id", insertable = true)
-    @Fetch(FetchMode.JOIN)
-    @Cascade(CascadeType.ALL)
+
+    @JsonIgnore
+    @JoinColumn(name = "parcelamento_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Parcelamento parcelamento;
 

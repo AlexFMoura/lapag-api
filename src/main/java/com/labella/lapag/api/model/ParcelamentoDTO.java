@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,4 +18,5 @@ public class ParcelamentoDTO {
     private BigDecimal valorTotal;
     private Integer qtdParcelas;
     private LocalDate primeiroVencimento;
+    private List<ParcelasDTO> parcelas;
 }
