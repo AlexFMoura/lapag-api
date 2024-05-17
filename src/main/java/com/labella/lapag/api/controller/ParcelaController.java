@@ -1,11 +1,10 @@
 package com.labella.lapag.api.controller;
 
+import com.labella.lapag.api.model.ParcelasDTO;
 import com.labella.lapag.domain.model.Parcelas;
 import com.labella.lapag.domain.service.ParcelasService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,8 +19,12 @@ public class ParcelaController {
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public List<Parcelas> buscarPorIdCliente(@PathVariable Integer clienteId) {
+    public List<ParcelasDTO> buscarPorIdCliente(@PathVariable Integer clienteId) {
         return parcelasService.buscarParcelasPorClienteId(clienteId);
     }
 
+    @PutMapping("/pagamento/parcela/{id}")
+    public ResponseEntity<String> pagamento(@PathVariable Long id) {
+        return parcelasService.marcarPago(id);
+    }
 }
