@@ -2,6 +2,7 @@ package com.labella.lapag.api.controller;
 
 import com.labella.lapag.api.mapper.ParcelamentoMapper;
 import com.labella.lapag.api.model.ParcelamentoDTO;
+import com.labella.lapag.api.model.ParcelasDTO;
 import com.labella.lapag.domain.model.Parcelamento;
 import com.labella.lapag.domain.repository.ParcelamentoRepository;
 import com.labella.lapag.domain.service.ParcelamentoService;
@@ -34,6 +35,11 @@ public class ParcelamentoController {
                 .map(parcelamentoMapper::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/cliente/{clienteId}")
+    public List<ParcelamentoDTO> buscarPorIdCliente(@PathVariable Long clienteId) {
+        return parcelamentoService.buscarParcelamentoPorClienteId(clienteId);
     }
 
     @PostMapping

@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Setter
 public class ParcelasDTO {
 
-    private Long parcelamentoId;
     private Long id;
     private Integer parcela;
     private BigDecimal valorParcela;

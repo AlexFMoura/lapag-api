@@ -1,5 +1,7 @@
 package com.labella.lapag.domain.service;
 
+import com.labella.lapag.api.mapper.ParcelamentoMapper;
+import com.labella.lapag.api.model.ParcelamentoDTO;
 import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Cliente;
 import com.labella.lapag.domain.model.Parcelamento;
@@ -18,6 +20,7 @@ public class ParcelamentoService {
     private final ParcelamentoRepository parcelamentoRepository;
     private final ClienteService clienteService;
     private final ParcelasService parcelasService;
+    private final ParcelamentoMapper parcelamentoMapper;
 
     @Transactional
     public Parcelamento salvar(Parcelamento parcelamento) {
@@ -32,5 +35,18 @@ public class ParcelamentoService {
         parcelamento.setCliente(cliente);
         parcelamento.setParcelas(parcelas);
         return parcelamentoRepository.save(parcelamento);
+    }
+
+
+    public List<ParcelamentoDTO> buscarParcelamentoPorClienteId(Long clienteId) {
+        List<Parcelamento> listaParcelamento = parcelamentoRepository.findByCliente_Id(clienteId);
+
+        if (listaParcelamento.isEmpty()) {
+            throw new NegocioException("Não existe parcelas para esse Cliente");
+        }
+        return listaParcelamento
+                .stream()
+                .map(parcelamentoMapper::toModel)
+                .toList();
     }
 }

@@ -18,11 +18,6 @@ public class ParcelaController {
         this.parcelasService = parcelasService;
     }
 
-    @GetMapping("/cliente/{clienteId}")
-    public List<ParcelasDTO> buscarPorIdCliente(@PathVariable Integer clienteId) {
-        return parcelasService.buscarParcelasPorClienteId(clienteId);
-    }
-
     @PutMapping("/pagamento/parcela/{id}")
     public ResponseEntity<String> pagamento(@PathVariable Long id) {
         return parcelasService.marcarPago(id);

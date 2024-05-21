@@ -53,12 +53,6 @@ public class ParcelasService {
         }
     }
 
-    public List<ParcelasDTO> buscarParcelasPorClienteId(Integer clienteId) {
-        return Collections.singletonList(parcelasRepository.findByParcelaClienteId(clienteId)
-                        .map(parcelasMapper::toModel)
-                .orElseThrow(() -> new NegocioException("Não existe parcelas para esse Cliente")));
-    }
-
     public ResponseEntity<String> marcarPago(Long id) {
 
         if (id == null) {
