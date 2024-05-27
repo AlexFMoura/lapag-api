@@ -66,4 +66,8 @@ public class ParcelasService {
 
         return ResponseEntity.ok("Pago realizado com sucesso!");
     }
+
+    public List<Parcelas> buscaParcelas(Long parcelamentoId) {
+        return parcelasRepository.findByParcelamento_id(parcelamentoId);
+    }
 }

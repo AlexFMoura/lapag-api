@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -48,5 +49,32 @@ public class ParcelamentoService {
                 .stream()
                 .map(parcelamentoMapper::toModel)
                 .toList();
+    }
+
+    @Transactional
+    public void excluir(Long id) {
+        boolean existe = false;
+        Optional<Parcelamento> parcelamento = parcelamentoRepository.findById(id);
+
+        if (parcelamento.isEmpty()) {
+            throw new NegocioException("Não existe parcelamento");
+        }
+
+        if (parcelamento.get().getParcelas().isEmpty()) {
+            parcelamentoRepository.deleteById(id);
+        } else {
+            List<Parcelas> parcelas = parcelamento.get().getParcelas();
+            for (Parcelas parcela : parcelas) {
+                if (parcela.getDataPagamento() != null) {
+                    existe = true;
+                }
+            }
+        }
+
+        if (existe) {
+            throw new NegocioException("Existe parcela paga para esse parcelamento.");
+        } else {
+            parcelamentoRepository.deleteById(id);
+        }
     }
 }

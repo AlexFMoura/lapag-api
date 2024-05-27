@@ -48,4 +48,10 @@ public class ParcelamentoController {
         Parcelamento parcelamentoSalvo = parcelamentoService.salvar(parcelamento);
         return parcelamentoMapper.toModel(parcelamentoSalvo);
     }
+
+    @DeleteMapping("/{parcelamentoId}")
+    public ResponseEntity<String> excluir(@PathVariable Long parcelamentoId) {
+        parcelamentoService.excluir(parcelamentoId);
+        return ResponseEntity.ok("Excluido com sucesso!");
+    }
 }
