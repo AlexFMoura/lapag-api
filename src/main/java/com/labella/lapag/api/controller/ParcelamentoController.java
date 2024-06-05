@@ -26,7 +26,7 @@ public class ParcelamentoController {
 
     @GetMapping
     public List<ParcelamentoDTO> listar() {
-        return parcelamentoMapper.toCollectionModel(parcelamentoRepository.findAll());
+        return parcelamentoService.listar();
     }
 
     @GetMapping("/{parcelamentoId}")

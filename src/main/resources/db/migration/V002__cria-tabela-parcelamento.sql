@@ -7,7 +7,7 @@ create table parcelamento (
                               id BIGINT NOT NULL DEFAULT nextval('public.sq_pk_parcelamento'),
                               cliente_id BIGINT not null,
                               venda_id BIGINT	not null,
-                              descricao varchar(20) not null,
+                              status varchar(20) not null,
                               valor_total numeric(10, 2) not null,
                               qtd_parcelas integer,
                               primeiro_vencimento Date not null,

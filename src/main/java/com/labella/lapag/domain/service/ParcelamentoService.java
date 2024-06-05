@@ -35,6 +35,7 @@ public class ParcelamentoService {
 
         parcelamento.setCliente(cliente);
         parcelamento.setParcelas(parcelas);
+        parcelamento.setStatus("Ativo");
         return parcelamentoRepository.save(parcelamento);
     }
 
@@ -63,12 +64,16 @@ public class ParcelamentoService {
         if (parcelamento.get().getParcelas().isEmpty()) {
             parcelamentoRepository.deleteById(id);
         } else {
-            List<Parcelas> parcelas = parcelamento.get().getParcelas();
-            for (Parcelas parcela : parcelas) {
-                if (parcela.getDataPagamento() != null) {
-                    existe = true;
-                }
-            }
+//            List<Parcelas> parcelas = parcelamento.get().getParcelas();
+//            for (Parcelas parcela : parcelas) {
+//                if (parcela.getDataPagamento() != null) {
+//                    existe = true;
+//                    break;
+//                }
+//            }
+//        }
+
+            existe = parcelamento.get().getParcelas().stream().anyMatch(p -> p.getDataPagamento() != null);
         }
 
         if (existe) {
@@ -76,5 +81,15 @@ public class ParcelamentoService {
         } else {
             parcelamentoRepository.deleteById(id);
         }
+    }
+
+    public List<ParcelamentoDTO> listar() {
+        List<Parcelamento> parcelamentos = parcelamentoRepository.findAll();
+
+        if (parcelamentos.isEmpty()) {
+            throw new NegocioException("Não existe parcelamento.");
+        }
+
+        return parcelamentoMapper.toCollectionModel(parcelamentos);
     }
 }

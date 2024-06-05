@@ -38,7 +38,9 @@ public class Parcelamento {
     @NotNull
     @Column(name = "venda_id")
     private Integer vendaId;
-    private String descricao;
+
+    @NotNull
+    private String status;
 
     @NotNull
     @Positive
