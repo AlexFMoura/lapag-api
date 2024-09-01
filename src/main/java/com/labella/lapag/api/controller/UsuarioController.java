@@ -1,6 +1,6 @@
 package com.labella.lapag.api.controller;
 
-import com.labella.lapag.domain.model.Usuarios;
+import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @GetMapping
-    public List<Usuarios> listarTodos() {
+    public List<Usuario> listarTodos() {
         return usuarioService.listar();
     }
 }

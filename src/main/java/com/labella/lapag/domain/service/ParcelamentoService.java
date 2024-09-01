@@ -6,6 +6,7 @@ import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Cliente;
 import com.labella.lapag.domain.model.Parcelamento;
 import com.labella.lapag.domain.model.Parcelas;
+import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.repository.ParcelamentoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class ParcelamentoService {
     private final ParcelamentoRepository parcelamentoRepository;
     private final ClienteService clienteService;
     private final ParcelasService parcelasService;
+    private final UsuarioService usuarioService;
     private final ParcelamentoMapper parcelamentoMapper;
 
     @Transactional
@@ -33,9 +35,12 @@ public class ParcelamentoService {
 
         Cliente cliente = clienteService.buscar(parcelamento.getCliente().getId());
 
+        Usuario usuario = usuarioService.buscar(parcelamento.getUsuario().getId());
+
         parcelamento.setCliente(cliente);
         parcelamento.setParcelas(parcelas);
         parcelamento.setStatus("Ativo");
+        parcelamento.setUsuario(usuario);
         return parcelamentoRepository.save(parcelamento);
     }
 

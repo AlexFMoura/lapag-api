@@ -11,11 +11,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
+@Entity(name = "usuarios")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
-public class Usuarios {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

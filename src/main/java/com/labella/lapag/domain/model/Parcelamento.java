@@ -64,6 +64,6 @@ public class Parcelamento {
     @ConvertGroup(from = Default.class, to = ValidationGroups.UsuarioId.class)
     @ManyToOne
 //        @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuarios usuario;
+    private Usuario usuario;
 
 }

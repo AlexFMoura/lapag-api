@@ -14,9 +14,10 @@ public class ParcelamentoDTO {
     private Long id;
     private String nomeCliente;
     private Integer vendaId;
-    private String descricao;
+    private String status;
     private BigDecimal valorTotal;
     private Integer qtdParcelas;
     private LocalDate primeiroVencimento;
     private List<ParcelasDTO> parcelas;
+    private Integer usuarioId;
 }
