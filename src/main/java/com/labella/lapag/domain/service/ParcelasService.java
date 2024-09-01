@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.labella.lapag.domain.Util.DataUtil.ajustarParaProximoDiaUtil;
+
 @AllArgsConstructor
 @Service
 public class ParcelasService {
@@ -36,7 +38,7 @@ public class ParcelasService {
             Parcelas parcela = new Parcelas();
             parcela.setValorParcela(valorParcela.add(diferenca));
             parcela.setParcela(i);
-            parcela.setDataVencimento(montaDataVencimento(i, parcelamento.getPrimeiroVencimento()));
+            parcela.setDataVencimento(ajustarParaProximoDiaUtil(montaDataVencimento(i, parcelamento.getPrimeiroVencimento())));
             diferenca = BigDecimal.ZERO;
             parcela.setParcelamento(parcelamento);
             parcelas.add(parcela);
