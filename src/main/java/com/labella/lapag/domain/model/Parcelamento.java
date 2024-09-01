@@ -59,4 +59,11 @@ public class Parcelamento {
     @OneToMany(mappedBy = "parcelamento", fetch = FetchType.LAZY)
     @Cascade(CascadeType.ALL)
     private List<Parcelas> parcelas = new ArrayList<Parcelas>();
+
+    @Valid
+    @ConvertGroup(from = Default.class, to = ValidationGroups.UsuarioId.class)
+    @ManyToOne
+//        @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuarios usuario;
+
 }
