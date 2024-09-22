@@ -17,7 +17,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/parcelamentos")
+@RequestMapping("/parcelamento")
 public class ParcelamentoController {
 
     private final ParcelamentoRepository parcelamentoRepository;
