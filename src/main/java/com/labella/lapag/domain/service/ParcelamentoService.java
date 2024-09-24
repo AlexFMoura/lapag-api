@@ -1,6 +1,7 @@
 package com.labella.lapag.domain.service;
 
 import com.labella.lapag.api.mapper.ParcelamentoMapper;
+import com.labella.lapag.api.model.CriarParcelamentoDTO;
 import com.labella.lapag.api.model.ParcelamentoDTO;
 import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Cliente;
@@ -26,17 +27,18 @@ public class ParcelamentoService {
     private final ParcelamentoMapper parcelamentoMapper;
 
     @Transactional
-    public Parcelamento salvar(Parcelamento parcelamento) {
-        if (parcelamento.getId() != null) {
-            throw new NegocioException("Parcelamento já existente");
-        }
+    public Parcelamento salvar(CriarParcelamentoDTO parcelamentoDTO) {
+//        if (parcelamento.getId() != null) {
+//            throw new NegocioException("Parcelamento já existente");
+//        }
 
-        List<Parcelas> parcelas = parcelasService.criarParcela(parcelamento);
+        List<Parcelas> parcelas = parcelasService.criarParcela(parcelamentoDTO);
 
-        Cliente cliente = clienteService.buscar(parcelamento.getCliente().getId());
+        Cliente cliente = clienteService.buscar(parcelamentoDTO.getClienteId());
 
-        Usuario usuario = usuarioService.buscar(parcelamento.getUsuario().getId());
+        Usuario usuario = usuarioService.buscar(parcelamentoDTO.getUsuarioId());
 
+        Parcelamento parcelamento = new Parcelamento();
         parcelamento.setCliente(cliente);
         parcelamento.setParcelas(parcelas);
         parcelamento.setStatus("Ativo");

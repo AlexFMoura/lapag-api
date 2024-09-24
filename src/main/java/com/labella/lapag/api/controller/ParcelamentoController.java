@@ -1,6 +1,7 @@
 package com.labella.lapag.api.controller;
 
 import com.labella.lapag.api.mapper.ParcelamentoMapper;
+import com.labella.lapag.api.model.CriarParcelamentoDTO;
 import com.labella.lapag.api.model.ParcelamentoDTO;
 import com.labella.lapag.api.model.ParcelasDTO;
 import com.labella.lapag.domain.model.Parcelamento;
@@ -44,7 +45,7 @@ public class ParcelamentoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParcelamentoDTO salvar(@Valid @RequestBody Parcelamento parcelamento) {
+    public ParcelamentoDTO salvar(@Valid @RequestBody CriarParcelamentoDTO parcelamento) {
         Parcelamento parcelamentoSalvo = parcelamentoService.salvar(parcelamento);
         return parcelamentoMapper.toModel(parcelamentoSalvo);
     }

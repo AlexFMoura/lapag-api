@@ -2,6 +2,7 @@ package com.labella.lapag.domain.service;
 
 import com.labella.lapag.api.mapper.ParcelamentoMapper;
 import com.labella.lapag.api.mapper.ParcelasMapper;
+import com.labella.lapag.api.model.CriarParcelamentoDTO;
 import com.labella.lapag.api.model.ParcelasDTO;
 import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Parcelamento;
@@ -29,18 +30,17 @@ public class ParcelasService {
     private final ParcelamentoMapper parcelamentoMapper;
     private final ParcelasMapper parcelasMapper;
 
-    public List<Parcelas> criarParcela(Parcelamento parcelamento) {
+    public List<Parcelas> criarParcela(CriarParcelamentoDTO parcelamento) {
         List<Parcelas> parcelas = new ArrayList<Parcelas>();
-        BigDecimal valorParcela = parcelamento.getValorTotal().divide(
+        BigDecimal valorParcela = parcelamento.getValorVenda().divide(
                 new BigDecimal(parcelamento.getQtdParcelas().toString()), 2, RoundingMode.HALF_EVEN);
-        BigDecimal diferenca = parcelamento.getValorTotal().subtract(valorParcela.multiply(BigDecimal.valueOf(parcelamento.getQtdParcelas())));
+        BigDecimal diferenca = parcelamento.getValorVenda().subtract(valorParcela.multiply(BigDecimal.valueOf(parcelamento.getQtdParcelas())));
         for (int i = 1; i <= parcelamento.getQtdParcelas(); i++) {
             Parcelas parcela = new Parcelas();
             parcela.setValorParcela(valorParcela.add(diferenca));
             parcela.setParcela(i);
             parcela.setDataVencimento(ajustarParaProximoDiaUtil(montaDataVencimento(i, parcelamento.getPrimeiroVencimento())));
             diferenca = BigDecimal.ZERO;
-            parcela.setParcelamento(parcelamento);
             parcelas.add(parcela);
         }
 

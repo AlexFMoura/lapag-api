@@ -18,7 +18,7 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Usuario buscar(Long id) {
+    public Usuario buscar(Integer id) {
         return usuarioRepository.findById(id).orElseThrow(() -> new NegocioException("Usuário não encontrado"));
     }
 }
