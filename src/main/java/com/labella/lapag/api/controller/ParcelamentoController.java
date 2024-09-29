@@ -3,6 +3,7 @@ package com.labella.lapag.api.controller;
 import com.labella.lapag.api.mapper.ParcelamentoMapper;
 import com.labella.lapag.api.model.CriarParcelamentoDTO;
 import com.labella.lapag.api.model.ParcelamentoDTO;
+import com.labella.lapag.api.model.ParcelamentoPageDTO;
 import com.labella.lapag.api.model.ParcelasDTO;
 import com.labella.lapag.domain.model.Parcelamento;
 import com.labella.lapag.domain.repository.ParcelamentoRepository;
@@ -10,6 +11,7 @@ import com.labella.lapag.domain.service.ParcelamentoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +56,21 @@ public class ParcelamentoController {
     public ResponseEntity<String> excluir(@PathVariable Long parcelamentoId) {
         parcelamentoService.excluir(parcelamentoId);
         return ResponseEntity.ok("Excluido com sucesso!");
+    }
+
+    @GetMapping("/venda/{vendaId}")
+    public ResponseEntity<ParcelamentoDTO> buscarVendaId(@PathVariable Integer vendaId) {
+        return parcelamentoRepository.findByVendaId(vendaId)
+                .map(parcelamentoMapper::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("page/")
+    public Page<ParcelamentoPageDTO> getParcelamentoPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return parcelamentoService.getParcelamentoPage(page, size);
+
     }
 }

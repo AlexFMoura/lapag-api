@@ -30,17 +30,19 @@ public class ParcelasService {
     private final ParcelamentoMapper parcelamentoMapper;
     private final ParcelasMapper parcelasMapper;
 
-    public List<Parcelas> criarParcela(CriarParcelamentoDTO parcelamento) {
+    public List<Parcelas> criarParcela(CriarParcelamentoDTO parcelamentoDTO, Parcelamento parcelamento) {
         List<Parcelas> parcelas = new ArrayList<Parcelas>();
-        BigDecimal valorParcela = parcelamento.getValorVenda().divide(
-                new BigDecimal(parcelamento.getQtdParcelas().toString()), 2, RoundingMode.HALF_EVEN);
-        BigDecimal diferenca = parcelamento.getValorVenda().subtract(valorParcela.multiply(BigDecimal.valueOf(parcelamento.getQtdParcelas())));
-        for (int i = 1; i <= parcelamento.getQtdParcelas(); i++) {
+        BigDecimal valorParcela = parcelamentoDTO.getValorVenda().divide(
+                new BigDecimal(parcelamentoDTO.getQtdParcela().toString()), 2, RoundingMode.HALF_EVEN);
+        BigDecimal diferenca = parcelamentoDTO.getValorVenda().subtract(valorParcela.multiply(BigDecimal.valueOf(parcelamentoDTO.getQtdParcela())));
+        for (int i = 1; i <= parcelamentoDTO.getQtdParcela(); i++) {
             Parcelas parcela = new Parcelas();
             parcela.setValorParcela(valorParcela.add(diferenca));
             parcela.setParcela(i);
-            parcela.setDataVencimento(ajustarParaProximoDiaUtil(montaDataVencimento(i, parcelamento.getPrimeiroVencimento())));
+            parcela.setDataVencimento(ajustarParaProximoDiaUtil(montaDataVencimento(i, parcelamentoDTO.getPrimeiroVencimento())));
             diferenca = BigDecimal.ZERO;
+
+            parcela.setParcelamento(parcelamento);
             parcelas.add(parcela);
         }
 
@@ -66,7 +68,7 @@ public class ParcelasService {
         parcela.setDataPagamento(LocalDate.now());
         parcelasRepository.save(parcela);
 
-        return ResponseEntity.ok("Pago realizado com sucesso!");
+        return ResponseEntity.ok("Pagamento realizado com sucesso!");
     }
 
     public List<Parcelas> buscaParcelas(Long parcelamentoId) {

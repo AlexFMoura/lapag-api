@@ -55,13 +55,13 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{clienteId}")
-    public ResponseEntity<Void> excluir(@PathVariable Long clienteId) {
+    public ResponseEntity<String> excluir(@PathVariable Long clienteId) {
         if (!clienteRepository.existsById(clienteId)) {
             return ResponseEntity.notFound().build();
         }
 
         clienteService.excluir(clienteId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Cliente excluido com sucesso!");
     }
 
     @GetMapping("/buscar")

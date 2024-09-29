@@ -1,5 +1,6 @@
 package com.labella.lapag.api.model;
 
+import com.labella.lapag.domain.model.Parcelas;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +10,14 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CriarParcelamentoDTO {
+public class ParcelamentoPageDTO {
 
+    private Long id;
+    private String nomeCliente;
     private Integer codigoVenda;
-    private Long clienteId;
+    private String status;
     private BigDecimal valorVenda;
     private Integer qtdParcela;
     private LocalDate primeiroVencimento;
-    private Integer usuarioId;
+    private List<Parcelas> parcelas;
 }
