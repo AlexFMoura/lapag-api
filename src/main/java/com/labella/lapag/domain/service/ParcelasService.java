@@ -3,7 +3,6 @@ package com.labella.lapag.domain.service;
 import com.labella.lapag.api.mapper.ParcelamentoMapper;
 import com.labella.lapag.api.mapper.ParcelasMapper;
 import com.labella.lapag.api.model.CriarParcelamentoDTO;
-import com.labella.lapag.api.model.ParcelasDTO;
 import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Parcelamento;
 import com.labella.lapag.domain.model.Parcelas;
@@ -16,9 +15,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+
 
 import static com.labella.lapag.domain.Util.DataUtil.ajustarParaProximoDiaUtil;
 
@@ -27,6 +25,7 @@ import static com.labella.lapag.domain.Util.DataUtil.ajustarParaProximoDiaUtil;
 public class ParcelasService {
 
     private final ParcelasRepository parcelasRepository;
+    private final PagamentoService pagamentoService;
     private final ParcelamentoMapper parcelamentoMapper;
     private final ParcelasMapper parcelasMapper;
 
@@ -67,6 +66,8 @@ public class ParcelasService {
 
         parcela.setDataPagamento(LocalDate.now());
         parcelasRepository.save(parcela);
+
+        pagamentoService.verificaSeQuitaContrato(parcela);
 
         return ResponseEntity.ok("Pagamento realizado com sucesso!");
     }

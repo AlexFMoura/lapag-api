@@ -32,6 +32,7 @@ public class ParcelamentoService {
     private final ClienteService clienteService;
     private final ParcelasService parcelasService;
     private final UsuarioService usuarioService;
+    private final PagamentoService pagamentoService;
     private final ParcelamentoMapper parcelamentoMapper;
 
     @Transactional
@@ -139,10 +140,15 @@ public class ParcelamentoService {
 //                .collect(Collectors.toList()));
 
         dto.setParcelas(Optional.ofNullable(parcelamento.getParcelas())
-                .map(parcelas -> parcelas.stream()
+                .map(parcelas -> parcelas
+                        .stream()
                         .sorted(Comparator.comparingLong(Parcelas::getId))
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList()));
         return dto;
+    }
+
+    public void verificaSeQuitaContrato(Parcelas parcela) {
+        pagamentoService.verificaSeQuitaContrato(parcela);
     }
 }
