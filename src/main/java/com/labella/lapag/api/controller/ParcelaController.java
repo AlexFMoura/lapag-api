@@ -6,6 +6,7 @@ import com.labella.lapag.domain.service.ParcelasService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -21,5 +22,15 @@ public class ParcelaController {
     @PutMapping("/pagamento/parcela/{id}")
     public ResponseEntity<String> pagamento(@PathVariable Long id) {
         return parcelasService.marcarPago(id);
+    }
+
+    @GetMapping("/vencidas/soma")
+    public BigDecimal somarParcelasVencidas() {
+        return parcelasService.somarParcelasVencidas();
+    }
+
+    @GetMapping("/vencendo-em-30-dias")
+    public BigDecimal buscarParcelasVencendoEm30Dias() {
+        return parcelasService.buscarParcelasVencendoEm30Dias();
     }
 }

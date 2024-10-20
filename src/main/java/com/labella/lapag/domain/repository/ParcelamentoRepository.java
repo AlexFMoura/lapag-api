@@ -17,4 +17,9 @@ public interface ParcelamentoRepository extends JpaRepository<Parcelamento, Long
 
     Optional<Parcelamento> findByVendaId(Integer vendaId);
 
+    Page<Parcelamento> findByClienteNomeContaining(String nome, Pageable pageable);
+
+    Page<Parcelamento> findByVendaId(Integer vendaId, Pageable pageable);
+
+    Page<Parcelamento> findByClienteNomeContainingAndVendaId(String nome, Integer vendaId, Pageable pageable);
 }

@@ -75,4 +75,22 @@ public class ParcelasService {
     public List<Parcelas> buscaParcelas(Long parcelamentoId) {
         return parcelasRepository.findByParcelamento_id(parcelamentoId);
     }
+
+    public BigDecimal somarParcelasVencidas() {
+        LocalDate currentDate = LocalDate.now();
+        List<Parcelas> vencidas = parcelasRepository.findVencidas(currentDate);
+
+        return vencidas.stream()
+                .map(Parcelas::getValorParcela)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal buscarParcelasVencendoEm30Dias() {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate futureDate = currentDate.plusDays(30);
+        List<Parcelas> vencendo30Dias = parcelasRepository.findVencemEm30Dias(currentDate, futureDate);
+        return vencendo30Dias.stream()
+                .map(Parcelas::getValorParcela)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }

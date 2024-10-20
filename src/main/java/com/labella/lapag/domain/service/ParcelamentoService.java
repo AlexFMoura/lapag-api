@@ -115,9 +115,21 @@ public class ParcelamentoService {
         return parcelamentoMapper.toCollectionModel(parcelamentos);
     }
 
-    public Page<ParcelamentoPageDTO> getParcelamentoPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Parcelamento> parcelamentoPage = parcelamentoRepository.findAll(pageable);
+    public Page<ParcelamentoPageDTO> getParcelamentoPage(String cliente, String codigoVenda, PageRequest pageRequest) {
+
+        Page<Parcelamento> parcelamentoPage;
+
+        if (cliente != null && codigoVenda != null) {
+            parcelamentoPage = parcelamentoRepository.findByClienteNomeContainingAndVendaId(
+                    cliente, Integer.valueOf(codigoVenda), pageRequest);
+        } else if (cliente != null) {
+            parcelamentoPage = parcelamentoRepository.findByClienteNomeContaining(cliente, pageRequest);
+        } else if (codigoVenda != null) {
+            parcelamentoPage = parcelamentoRepository.findByVendaId(Integer.valueOf(codigoVenda), pageRequest);
+        } else {
+            parcelamentoPage = parcelamentoRepository.findAll(pageRequest);
+        }
+//        Page<Parcelamento> parcelamentoPage = parcelamentoRepository.findAll(pageRequest);
 
         // Converter para DTO
         return parcelamentoPage.map(this::toParcelamentoDTO);
