@@ -11,6 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity(name = "usuarios")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
@@ -29,8 +31,9 @@ public class Usuario {
     @Email
     private String email;
 
-    @NotBlank
     @Size(max = 255)
     @Email
     private String senha;
+
+    private LocalDate data_inativo;
 }
