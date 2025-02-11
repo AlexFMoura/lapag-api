@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/parcelas")
@@ -20,8 +21,9 @@ public class ParcelaController {
     }
 
     @PutMapping("/pagamento/parcela/{id}")
-    public ResponseEntity<String> pagamento(@PathVariable Long id) {
-        return parcelasService.marcarPago(id);
+    public ResponseEntity<String> pagamento(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        String formaPagamento = request.get("formaPagamento");
+        return parcelasService.marcarPago(id,formaPagamento);
     }
 
     @GetMapping("/vencidas/soma")

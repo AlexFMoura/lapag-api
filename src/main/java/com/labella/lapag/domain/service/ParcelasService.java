@@ -56,7 +56,7 @@ public class ParcelasService {
         }
     }
 
-    public ResponseEntity<String> marcarPago(Long id) {
+    public ResponseEntity<String> marcarPago(Long id, String formaPagto) {
 
         if (id == null) {
             throw new NegocioException("Favor informar a Parcela");
@@ -65,6 +65,7 @@ public class ParcelasService {
         Parcelas parcela = parcelasRepository.findById(id).orElseThrow(() -> new NegocioException("Parcela não existente"));
 
         parcela.setDataPagamento(LocalDate.now());
+        parcela.setFormaPagto(formaPagto);
         parcelasRepository.save(parcela);
 
         pagamentoService.verificaSeQuitaContrato(parcela);

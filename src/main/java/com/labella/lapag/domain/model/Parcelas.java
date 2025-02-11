@@ -35,6 +35,9 @@ public class Parcelas {
     @Column(name = "data_pagamento")
     private LocalDate dataPagamento;
 
+    @Column(name = "forma_pagto")
+    private String formaPagto;
+
     @JsonIgnore
     @JoinColumn(name = "parcelamento_id")
     @ManyToOne(fetch = FetchType.EAGER)
