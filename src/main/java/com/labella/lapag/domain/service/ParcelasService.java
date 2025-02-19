@@ -1,7 +1,5 @@
 package com.labella.lapag.domain.service;
 
-import com.labella.lapag.api.mapper.ParcelamentoMapper;
-import com.labella.lapag.api.mapper.ParcelasMapper;
 import com.labella.lapag.api.model.CriarParcelamentoDTO;
 import com.labella.lapag.api.model.ParcelaVencidaDTO;
 import com.labella.lapag.domain.exception.NegocioException;
