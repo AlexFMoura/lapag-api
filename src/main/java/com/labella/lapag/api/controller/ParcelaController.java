@@ -1,8 +1,6 @@
 package com.labella.lapag.api.controller;
 
 import com.labella.lapag.api.model.ParcelaVencidaDTO;
-import com.labella.lapag.api.model.ParcelasDTO;
-import com.labella.lapag.domain.model.Parcelas;
 import com.labella.lapag.domain.service.ParcelasService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

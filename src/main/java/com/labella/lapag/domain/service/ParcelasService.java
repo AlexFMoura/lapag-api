@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import static com.labella.lapag.domain.Util.DataUtil.ajustarParaProximoDiaUtil;
 
 @AllArgsConstructor
