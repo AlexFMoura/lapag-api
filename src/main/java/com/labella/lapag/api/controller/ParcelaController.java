@@ -1,5 +1,6 @@
 package com.labella.lapag.api.controller;
 
+import com.labella.lapag.api.model.ParcelaVencidaDTO;
 import com.labella.lapag.api.model.ParcelasDTO;
 import com.labella.lapag.domain.model.Parcelas;
 import com.labella.lapag.domain.service.ParcelasService;
@@ -31,8 +32,20 @@ public class ParcelaController {
         return parcelasService.somarParcelasVencidas();
     }
 
+    @GetMapping("/vencidas")
+    public ResponseEntity<List<ParcelaVencidaDTO>> buscarParcelasVencidas() {
+        List<ParcelaVencidaDTO> parcelasVencidas = parcelasService.buscarParcelasVencidas();
+        return ResponseEntity.ok(parcelasVencidas);
+    }
+
+//    @GetMapping("/vencendo-em-30-dias")
+//    public BigDecimal buscarParcelasVencendoEm30Dias() {
+//        return parcelasService.buscarParcelasVencendoEm30Dias();
+//    }
+
     @GetMapping("/vencendo-em-30-dias")
-    public BigDecimal buscarParcelasVencendoEm30Dias() {
-        return parcelasService.buscarParcelasVencendoEm30Dias();
+    public ResponseEntity<List<ParcelaVencidaDTO>> buscarParcelasVencendoEm30Dias() {
+        List<ParcelaVencidaDTO> parcelasVencidas = parcelasService.buscarParcelasVencendoEm30Dias();
+        return ResponseEntity.ok(parcelasVencidas);
     }
 }

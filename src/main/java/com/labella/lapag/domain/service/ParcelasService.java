@@ -3,6 +3,7 @@ package com.labella.lapag.domain.service;
 import com.labella.lapag.api.mapper.ParcelamentoMapper;
 import com.labella.lapag.api.mapper.ParcelasMapper;
 import com.labella.lapag.api.model.CriarParcelamentoDTO;
+import com.labella.lapag.api.model.ParcelaVencidaDTO;
 import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Parcelamento;
 import com.labella.lapag.domain.model.Parcelas;
@@ -64,6 +65,12 @@ public class ParcelasService {
 
         Parcelas parcela = parcelasRepository.findById(id).orElseThrow(() -> new NegocioException("Parcela não existente"));
 
+        boolean naoPodeReceber = parcelasRepository.findParcelaVencidaNaoPaga(parcela.getDataVencimento()).isPresent();
+
+        if (naoPodeReceber) {
+            throw new NegocioException("Existe uma parcela menor em aberta, favor receber ela primeiro!");
+        }
+
         parcela.setDataPagamento(LocalDate.now());
         parcela.setFormaPagto(formaPagto);
         parcelasRepository.save(parcela);
@@ -86,12 +93,23 @@ public class ParcelasService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public BigDecimal buscarParcelasVencendoEm30Dias() {
+//    public BigDecimal buscarParcelasVencendoEm30Dias() {
+//        LocalDate currentDate = LocalDate.now();
+//        LocalDate futureDate = currentDate.plusDays(30);
+//        List<Parcelas> vencendo30Dias = parcelasRepository.findVencemEm30Dias(currentDate, futureDate);
+//        return vencendo30Dias.stream()
+//                .map(Parcelas::getValorParcela)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//    }
+
+    public List<ParcelaVencidaDTO> buscarParcelasVencendoEm30Dias() {
         LocalDate currentDate = LocalDate.now();
         LocalDate futureDate = currentDate.plusDays(30);
-        List<Parcelas> vencendo30Dias = parcelasRepository.findVencemEm30Dias(currentDate, futureDate);
-        return vencendo30Dias.stream()
-                .map(Parcelas::getValorParcela)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return parcelasRepository.findParcelasVencendoEm30Dias(currentDate,futureDate);
+
+    }
+
+    public List<ParcelaVencidaDTO> buscarParcelasVencidas() {
+        return parcelasRepository.findParcelasVencidas();
     }
 }
