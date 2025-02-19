@@ -26,8 +26,6 @@ public class ParcelasService {
 
     private final ParcelasRepository parcelasRepository;
     private final PagamentoService pagamentoService;
-    private final ParcelamentoMapper parcelamentoMapper;
-    private final ParcelasMapper parcelasMapper;
 
     public List<Parcelas> criarParcela(CriarParcelamentoDTO parcelamentoDTO, Parcelamento parcelamento) {
         List<Parcelas> parcelas = new ArrayList<Parcelas>();
@@ -92,14 +90,14 @@ public class ParcelasService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-//    public BigDecimal buscarParcelasVencendoEm30Dias() {
-//        LocalDate currentDate = LocalDate.now();
-//        LocalDate futureDate = currentDate.plusDays(30);
-//        List<Parcelas> vencendo30Dias = parcelasRepository.findVencemEm30Dias(currentDate, futureDate);
-//        return vencendo30Dias.stream()
-//                .map(Parcelas::getValorParcela)
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//    }
+    public BigDecimal buscarSomatorioParcelasVencendoEm30Dias() {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate futureDate = currentDate.plusDays(30);
+        List<Parcelas> vencendo30Dias = parcelasRepository.findVencemEm30Dias(currentDate, futureDate);
+        return vencendo30Dias.stream()
+                .map(Parcelas::getValorParcela)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
     public List<ParcelaVencidaDTO> buscarParcelasVencendoEm30Dias() {
         LocalDate currentDate = LocalDate.now();
