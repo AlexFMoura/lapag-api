@@ -1,16 +1,13 @@
 package com.labella.lapag.api.controller;
 
-import com.labella.lapag.domain.model.Cliente;
 import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController

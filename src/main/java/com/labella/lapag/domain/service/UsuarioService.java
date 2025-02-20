@@ -1,7 +1,6 @@
 package com.labella.lapag.domain.service;
 
 import com.labella.lapag.domain.exception.NegocioException;
-import com.labella.lapag.domain.model.Cliente;
 import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -35,5 +35,9 @@ public class UsuarioService {
         }
 
         return usuarioRepository.save(usuario);
+    }
+
+    public Optional<Usuario> buscaPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }
