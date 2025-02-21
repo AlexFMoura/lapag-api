@@ -1,17 +1,17 @@
 package com.labella.lapag.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.labella.lapag.api.model.LoginDTO;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity(name = "usuarios")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -32,8 +32,19 @@ public class Usuario {
     private String email;
 
     @Size(max = 255)
-    @Email
     private String senha;
 
     private LocalDate data_inativo;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "usuario_rota",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "rota_id")
+    )
+    private Set<Rota> rotas;
+
+    public boolean isLoginCorrect(LoginDTO loginDTO, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(loginDTO.getSenha(), this.senha);
+    }
 }

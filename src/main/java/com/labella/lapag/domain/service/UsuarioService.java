@@ -40,4 +40,8 @@ public class UsuarioService {
     public Optional<Usuario> buscaPorEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
+
+    public Optional<Usuario> buscaPorNome(String nome) {
+        return usuarioRepository.findByNome(nome);
+    }
 }
