@@ -1,5 +1,5 @@
-INSERT INTO rota (id, nome) VALUES (1, 'admin')
+INSERT INTO rota (id, nome) VALUES (1, 'ADMIN')
     ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO rota (id, nome) VALUES (2, 'basic')
+INSERT INTO rota (id, nome) VALUES (2, 'BASIC')
     ON CONFLICT (id) DO NOTHING;

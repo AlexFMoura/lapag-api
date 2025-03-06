@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +17,7 @@ public class Rota {
 
     private String nome;
 
+    @Getter
     public enum Values {
 
         ADMIN(1L),
@@ -27,10 +27,6 @@ public class Rota {
 
         Values(long rotaId) {
             this.rotaId = rotaId;
-        }
-
-        public long getRotaId() {
-            return rotaId;
         }
 
     }

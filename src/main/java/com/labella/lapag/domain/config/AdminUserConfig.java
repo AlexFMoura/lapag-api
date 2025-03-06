@@ -5,10 +5,13 @@ import com.labella.lapag.domain.model.Rota;
 import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.service.RotaService;
 import com.labella.lapag.domain.service.UsuarioService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.Set;
 
 @Configuration
 public class AdminUserConfig implements CommandLineRunner {
@@ -24,10 +27,13 @@ public class AdminUserConfig implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        var rotaAdmin = rotaService.findByNome(Rota.Values.ADMIN.name());
+        Rota rotaAdmin = rotaService.findByNome(Rota.Values.ADMIN.name());
 
-        var userAdmin = usuarioService.buscaPorNome("admin");
-        userAdmin.ifPresentOrElse(
+        if (rotaAdmin == null) {
+            throw new IllegalStateException("Rota ADMIN não encontrada no banco de dados");
+        }
+
+        usuarioService.buscaPorNome("admin").ifPresentOrElse(
                 user -> {
                     System.out.println("admin já exite");
                 },
@@ -36,8 +42,10 @@ public class AdminUserConfig implements CommandLineRunner {
                     user.setNome("admin");
                     user.setEmail("labellamakesoficial@gmail.com");
                     user.setSenha(bCryptPasswordEncoder.encode("labella1203"));
-                    usuarioService.salvar(user);
+                    user.setRotas(Set.of(rotaAdmin));
+                    usuarioService.salvarAdmin(user);
                 }
         );
+
     }
 }

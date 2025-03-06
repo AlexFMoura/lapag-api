@@ -1,5 +1,6 @@
 package com.labella.lapag.api.model;
 
+import com.labella.lapag.domain.model.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LoginResponseDTO {
 
-    private String accessToken;
-    private Long expiresIn;
+    private String token;
+    private UsuarioDTO usuario;
 
 }

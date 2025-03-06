@@ -1,7 +1,9 @@
 package com.labella.lapag.api.controller;
 
+import com.labella.lapag.api.mapper.UsuarioMapper;
 import com.labella.lapag.api.model.LoginDTO;
 import com.labella.lapag.api.model.LoginResponseDTO;
+import com.labella.lapag.api.model.UsuarioDTO;
 import com.labella.lapag.domain.model.Rota;
 import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.service.UsuarioService;
@@ -25,11 +27,12 @@ public class LoginController {
 
     @Autowired
     private UsuarioService usuarioService;
-
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private JwtEncoder jwtEncoder;
+    @Autowired
+    private UsuarioMapper usuarioMapper;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
@@ -57,7 +60,10 @@ public class LoginController {
 
        var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
-       return ResponseEntity.ok(jwtValue);
+        UsuarioDTO usuarioDTO = usuarioMapper.toModel(usuario);
+        var response = new LoginResponseDTO(jwtValue, usuarioDTO);
+
+       return ResponseEntity.ok(response);
 
     }
 }
