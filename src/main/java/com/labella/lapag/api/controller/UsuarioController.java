@@ -5,6 +5,7 @@ import com.labella.lapag.domain.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,5 +31,19 @@ public class UsuarioController {
     @PostMapping
     public Usuario salvar(@Valid @RequestBody Usuario usuario) {
         return usuarioService.salvar(usuario);
+    }
+
+    @PutMapping("/{usuarioId}/alterar-senha")
+    public ResponseEntity<Void> alterarSenha(
+            @PathVariable Integer usuarioId,
+            @RequestParam String senhaAtual,
+            @RequestParam String novaSenha) {
+
+        try {
+            usuarioService.alterarSenha(usuarioId, senhaAtual, novaSenha);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build(); // Retorna 400 se algo der errado
+        }
     }
 }

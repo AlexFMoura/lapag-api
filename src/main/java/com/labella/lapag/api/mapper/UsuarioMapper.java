@@ -12,6 +12,11 @@ public class UsuarioMapper {
     private final ModelMapper modelMapper;
 
     public UsuarioDTO toModel(Usuario usuario) {
-        return modelMapper.map(usuario, UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = modelMapper.map(usuario, UsuarioDTO.class);
+        if (usuario.getRotas() != null && !usuario.getRotas().isEmpty()) {
+            String primeiraRota = usuario.getRotas().iterator().next().getNome();
+            usuarioDTO.setRotaNome(primeiraRota);
+        }
+        return usuarioDTO;
     }
 }

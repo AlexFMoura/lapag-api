@@ -52,7 +52,6 @@ public class UsuarioService {
     @Transactional
     public void salvarAdmin(Usuario usuario) {
         entityManager.merge(usuario);
-//        usuarioRepository.save(usuario);
     }
 
     public Optional<Usuario> buscaPorEmail(String email) {
@@ -61,5 +60,22 @@ public class UsuarioService {
 
     public Optional<Usuario> buscaPorNome(String nome) {
         return usuarioRepository.findByNome(nome);
+    }
+
+    public void alterarSenha(Integer usuarioId, String senhaAtual, String novaSenha) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Verifica se a senha atual fornecida é válida
+        if (!bCryptPasswordEncoder.matches(senhaAtual, usuario.getSenha())) {
+            throw new RuntimeException("Senha atual inválida");
+        }
+
+        // Criptografa a nova senha
+        String senhaCriptografada = bCryptPasswordEncoder.encode(novaSenha);
+
+        // Atualiza a senha do usuário no banco de dados
+        usuario.setSenha(senhaCriptografada);
+        usuarioRepository.save(usuario);
     }
 }
