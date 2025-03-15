@@ -1,18 +1,26 @@
 package com.labella.lapag.domain.service;
 
+import com.labella.lapag.api.model.ClienteDTO;
+import com.labella.lapag.api.model.UsuarioDTO;
 import com.labella.lapag.domain.exception.NegocioException;
+import com.labella.lapag.domain.model.Cliente;
 import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @AllArgsConstructor
 @Service
@@ -27,12 +35,31 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public List<Usuario> listar() {
         return usuarioRepository.findAll();
     }
 
     public Usuario buscar(Integer id) {
         return usuarioRepository.findById(id).orElseThrow(() -> new NegocioException("Usuário não encontrado"));
+    }
+
+    public Usuario buscarNome(String nome) {
+        return usuarioRepository.findByNome(nome).orElseThrow(() -> new NegocioException("Usuário não encontrado"));
+    }
+
+    private String gerarSenhaAleatoria() {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
+        Random random = new Random();
+        StringBuilder senha = new StringBuilder();
+
+        for (int i = 0; i < 8; i++) { // Gera uma senha de 8 caracteres
+            senha.append(caracteres.charAt(random.nextInt(caracteres.length())));
+        }
+        return senha.toString();
+
     }
 
     @Transactional
@@ -45,8 +72,17 @@ public class UsuarioService {
             throw new NegocioException("Já existe um usuário cadastrado com este e-mail");
         }
 
-        usuario.setSenha(bCryptPasswordEncoder.encode(usuario.getSenha()));
-        return usuarioRepository.save(usuario);
+        String senhaGerada = gerarSenhaAleatoria();
+
+        usuario.setSenha(bCryptPasswordEncoder.encode(senhaGerada));
+        Usuario usuarioSalvo = usuarioRepository.save(usuario);
+
+        emailService.enviarEmail(usuario.getEmail(),
+                "Sua nova senha",
+                "Olá " + usuario.getNome() + ", sua senha de acesso é: " + senhaGerada
+        );
+
+        return usuarioSalvo;
     }
 
     @Transactional
@@ -77,5 +113,29 @@ public class UsuarioService {
         // Atualiza a senha do usuário no banco de dados
         usuario.setSenha(senhaCriptografada);
         usuarioRepository.save(usuario);
+    }
+
+    public Page<UsuarioDTO> getUsuarioPage(Integer page, Integer size, String sort, String nome) {
+        String[] sortParams = sort.split(",");
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortParams[0]).ascending());
+
+        Page<Usuario> usuarioPage;
+        if (nome != null && !nome.isEmpty()) {
+            usuarioPage = usuarioRepository.findByNomeContainingIgnoreCase(nome.toLowerCase(), pageable);
+        } else {
+            usuarioPage = usuarioRepository.findAll(pageable);
+        }
+
+        return usuarioPage.map(this::convertToDTO);
+    }
+
+    private UsuarioDTO convertToDTO(Usuario usuario) {
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setId(usuario.getId());
+        usuarioDTO.setNome(usuario.getNome());
+        usuarioDTO.setEmail(usuario.getEmail());
+        usuarioDTO.setRotaNome(usuario.getRotas().getClass().getName());
+        usuarioDTO.setData_inativo(usuario.getData_inativo());
+    return usuarioDTO;
     }
 }

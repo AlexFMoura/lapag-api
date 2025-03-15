@@ -7,6 +7,7 @@ import com.labella.lapag.domain.service.RotaService;
 import com.labella.lapag.domain.service.UsuarioService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +26,12 @@ public class AdminUserConfig implements CommandLineRunner {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Value("${admin.user.email}")
+    private String adminEmail;
+
+    @Value("${admin.user.password}")
+    private String adminPassword;
+
     @Override
     public void run(String... args) throws Exception {
         Rota rotaAdmin = rotaService.findByNome(Rota.Values.ADMIN.name());
@@ -38,10 +45,10 @@ public class AdminUserConfig implements CommandLineRunner {
                     System.out.println("admin já exite");
                 },
                 () -> {
-                    var user = new Usuario();
+                    Usuario user = new Usuario();
                     user.setNome("admin");
-                    user.setEmail("labellamakesoficial@gmail.com");
-                    user.setSenha(bCryptPasswordEncoder.encode("labella1203"));
+                    user.setEmail(adminEmail);
+                    user.setSenha(bCryptPasswordEncoder.encode(adminPassword));
                     user.setRotas(Set.of(rotaAdmin));
                     usuarioService.salvarAdmin(user);
                 }

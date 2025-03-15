@@ -25,11 +25,11 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
 
     @Query("""
         SELECT new com.labella.lapag.api.model.ParcelaVencidaDTO(
-            p.parcelamento.vendaId, 
-            c.nome, 
-            c.telefone, 
-            p.parcela, 
-            p.valorParcela, 
+            p.parcelamento.vendaId,
+            c.nome,
+            c.telefone,
+            p.parcela,
+            p.valorParcela,
             p.dataVencimento
         )
         FROM Parcelas p
@@ -42,11 +42,11 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
 
     @Query("""
         SELECT new com.labella.lapag.api.model.ParcelaVencidaDTO(
-            p.parcelamento.vendaId, 
-            c.nome, 
-            c.telefone, 
-            p.parcela, 
-            p.valorParcela, 
+            p.parcelamento.vendaId,
+            c.nome,
+            c.telefone,
+            p.parcela,
+            p.valorParcela,
             p.dataVencimento
         )
         FROM Parcelas p
