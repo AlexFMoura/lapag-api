@@ -4,11 +4,14 @@ import com.labella.lapag.api.model.ClienteDTO;
 import com.labella.lapag.api.model.UsuarioDTO;
 import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Cliente;
+import com.labella.lapag.domain.model.Rota;
 import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,10 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
 public class UsuarioService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -37,6 +43,9 @@ public class UsuarioService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private RotaService rotaService;
 
     public List<Usuario> listar() {
         return usuarioRepository.findAll();
@@ -62,10 +71,10 @@ public class UsuarioService {
 
     }
 
-    @Transactional
-    public Usuario salvar(Usuario usuario) {
-        boolean emailEmUso = usuarioRepository.findByEmail(usuario.getEmail())
-                .filter(c -> !c.equals(usuario))
+    @Transactional(rollbackFor = Exception.class)
+    public Usuario salvar(UsuarioDTO usuarioDTO) {
+        boolean emailEmUso = usuarioRepository.findByEmail(usuarioDTO.getEmail())
+                .filter(c -> !c.equals(usuarioDTO))
                 .isPresent();
 
         if (emailEmUso) {
@@ -74,13 +83,34 @@ public class UsuarioService {
 
         String senhaGerada = gerarSenhaAleatoria();
 
+        Usuario usuario = new Usuario();
+        usuario.setNome(usuarioDTO.getNome());
+        usuario.setEmail(usuarioDTO.getEmail());
+
         usuario.setSenha(bCryptPasswordEncoder.encode(senhaGerada));
+
+        Rota rota;
+        if (usuarioDTO.getRotaNome().equals("ADMIN")) {
+            rota = rotaService.findByNome(Rota.Values.ADMIN.name());
+        } else {
+            rota = rotaService.findByNome(Rota.Values.BASIC.name());
+        }
+
+        usuario.setRotas(Set.of(rota));
+
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
-        emailService.enviarEmail(usuario.getEmail(),
-                "Sua nova senha",
-                "Olá " + usuario.getNome() + ", sua senha de acesso é: " + senhaGerada
-        );
+        try {
+            emailService.enviarEmail(usuario.getEmail(),
+                    "Sua nova senha",
+                    "Olá " + usuario.getNome() + ", sua senha de acesso é: " + senhaGerada
+            );
+        } catch (Exception e) {
+            // Log do erro de envio de email
+            logger.error("Erro ao enviar e-mail para o usuário " + usuario.getEmail(), e);
+            // Lança uma exceção para garantir o rollback
+            throw new RuntimeException("Falha no envio de e-mail, transação revertida.");
+        }
 
         return usuarioSalvo;
     }
@@ -96,6 +126,10 @@ public class UsuarioService {
 
     public Optional<Usuario> buscaPorNome(String nome) {
         return usuarioRepository.findByNome(nome);
+    }
+
+    public Optional<Usuario> buscaPorId(Integer id) {
+        return usuarioRepository.findById(id);
     }
 
     public void alterarSenha(Integer usuarioId, String senhaAtual, String novaSenha) {

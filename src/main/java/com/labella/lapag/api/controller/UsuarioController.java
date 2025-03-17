@@ -1,6 +1,7 @@
 package com.labella.lapag.api.controller;
 
 import com.labella.lapag.api.mapper.UsuarioMapper;
+import com.labella.lapag.api.model.AlterarSenhaDTO;
 import com.labella.lapag.api.model.ClienteDTO;
 import com.labella.lapag.api.model.ParcelamentoPageDTO;
 import com.labella.lapag.api.model.UsuarioDTO;
@@ -39,7 +40,7 @@ public class UsuarioController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public UsuarioDTO salvar(@Valid @RequestBody Usuario usuario) {
+    public UsuarioDTO salvar(@Valid @RequestBody UsuarioDTO usuario) {
         Usuario usuarioSalvo = usuarioService.salvar(usuario);
         return usuarioMapper.toModel(usuarioSalvo);
     }
@@ -47,11 +48,10 @@ public class UsuarioController {
     @PutMapping("/{usuarioId}/alterar-senha")
     public ResponseEntity<Void> alterarSenha(
             @PathVariable Integer usuarioId,
-            @RequestParam String senhaAtual,
-            @RequestParam String novaSenha) {
+            @RequestBody AlterarSenhaDTO alterarSenhaDTO) {
 
         try {
-            usuarioService.alterarSenha(usuarioId, senhaAtual, novaSenha);
+            usuarioService.alterarSenha(usuarioId, alterarSenhaDTO.getSenhaAtual(), alterarSenhaDTO.getNovaSenha());
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build(); // Retorna 400 se algo der errado
