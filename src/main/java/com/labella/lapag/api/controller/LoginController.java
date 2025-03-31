@@ -80,7 +80,7 @@ public class LoginController {
 
     private String generateAccessToken(Usuario usuario) {
         var now = Instant.now();
-        var expirar = 300L; // Tempo de expiração de 5 minutos
+        var expirar = 3600L; // Tempo de expiração de 1 hora
 
         var claims = JwtClaimsSet.builder()
                 .issuer("mybackend")

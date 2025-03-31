@@ -20,7 +20,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/usuario")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -71,6 +71,19 @@ public class UsuarioController {
             @RequestParam(value = "nome", required = false) String nome) {
 
         return usuarioService.getUsuarioPage(page, size, sort, nome);
+    }
+
+    @PutMapping("/{usuarioId}")
+    public ResponseEntity<Void> alterarUsuario(
+            @PathVariable Integer usuarioId,
+            @RequestBody UsuarioDTO usuarioDTO) {
+
+        try {
+//            usuarioService.alterarSenha(usuarioId, alterarSenhaDTO.getSenhaAtual(), alterarSenhaDTO.getNovaSenha());
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build(); // Retorna 400 se algo der errado
+        }
     }
 
 //    @GetMapping("page/")
