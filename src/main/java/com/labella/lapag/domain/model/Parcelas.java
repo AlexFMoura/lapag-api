@@ -35,6 +35,16 @@ public class Parcelas {
     @Column(name = "data_pagamento")
     private LocalDate dataPagamento;
 
+    @Column(name = "valor_juros")
+    private BigDecimal valorJuros;
+
+    @Column(name = "valor_multa")
+    private BigDecimal valorMulta;
+
+    private Double juros;
+
+    private Double multa;
+
     @Column(name = "forma_pagto")
     private String formaPagto;
 
@@ -42,5 +52,8 @@ public class Parcelas {
     @JoinColumn(name = "parcelamento_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Parcelamento parcelamento;
+
+    @Transient
+    private BigDecimal totalPagar;
 
 }

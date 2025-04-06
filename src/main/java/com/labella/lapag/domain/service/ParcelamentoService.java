@@ -4,6 +4,7 @@ import com.labella.lapag.api.mapper.ParcelamentoMapper;
 import com.labella.lapag.api.model.CriarParcelamentoDTO;
 import com.labella.lapag.api.model.ParcelamentoDTO;
 import com.labella.lapag.api.model.ParcelamentoPageDTO;
+import com.labella.lapag.domain.Util.Calculos;
 import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Cliente;
 import com.labella.lapag.domain.model.Parcelamento;
@@ -12,9 +13,7 @@ import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.repository.ParcelamentoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -144,17 +143,11 @@ public class ParcelamentoService {
         dto.setValorVenda(parcelamento.getValorTotal()); // Corrigido para 'valorTotal'
         dto.setQtdParcela(parcelamento.getQtdParcelas()); // Corrigido para 'qtdParcelas'
         dto.setPrimeiroVencimento(parcelamento.getPrimeiroVencimento());
-
-//        dto.setParcelas(parcelamento
-//                .getParcelas()
-//                .stream()
-//                .sorted(Comparator.comparingLong(Parcelas::getId))
-//                .collect(Collectors.toList()));
-
         dto.setParcelas(Optional.ofNullable(parcelamento.getParcelas())
                 .map(parcelas -> parcelas
                         .stream()
                         .sorted(Comparator.comparingLong(Parcelas::getId))
+                        .peek(Calculos::calcularMultaEJuros)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList()));
         return dto;

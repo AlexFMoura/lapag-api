@@ -68,7 +68,7 @@ public class ParcelamentoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("page/")
+    @GetMapping("/page/")
     public Page<ParcelamentoPageDTO> getParcelamentoPaginado(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

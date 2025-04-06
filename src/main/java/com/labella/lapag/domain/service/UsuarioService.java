@@ -1,15 +1,14 @@
 package com.labella.lapag.domain.service;
 
-import com.labella.lapag.api.model.ClienteDTO;
 import com.labella.lapag.api.model.UsuarioDTO;
 import com.labella.lapag.domain.exception.NegocioException;
-import com.labella.lapag.domain.model.Cliente;
 import com.labella.lapag.domain.model.Rota;
 import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class UsuarioService {
@@ -170,6 +170,34 @@ public class UsuarioService {
         usuarioDTO.setEmail(usuario.getEmail());
         usuarioDTO.setRotaNome(usuario.getRotas().getClass().getName());
         usuarioDTO.setData_inativo(usuario.getData_inativo());
-    return usuarioDTO;
+        return usuarioDTO;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void alterarUsuario(Integer usuarioId, UsuarioDTO usuarioDTO) {
+        try {
+            Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(() -> new NegocioException("Usuário não encontrado"));
+            usuario.setNome(usuarioDTO.getNome());
+            usuario.setEmail(usuarioDTO.getEmail());
+            usuario.setData_inativo(usuarioDTO.getData_inativo());
+
+            Rota rota;
+            if ("ADMIN".equalsIgnoreCase(usuarioDTO.getRotaNome())) {
+                rota = rotaService.findByNome(Rota.Values.ADMIN.name());
+            } else {
+                rota = rotaService.findByNome(Rota.Values.BASIC.name());
+            }
+
+            usuario.getRotas().clear(); // Remove as rotas existentes
+            usuario.getRotas().add(rota); // Adiciona a nova rota
+
+
+            log.debug("Usuário recebido: {}", usuario.toString());
+            usuarioRepository.save(usuario);
+            entityManager.flush();
+        } catch (Exception e) {
+            log.error("Erro ao salvar usuário", e); // 👈 Isso vai mostrar a stack trace real
+            throw e;
+        }
     }
 }

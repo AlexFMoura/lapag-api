@@ -79,7 +79,7 @@ public class UsuarioController {
             @RequestBody UsuarioDTO usuarioDTO) {
 
         try {
-//            usuarioService.alterarSenha(usuarioId, alterarSenhaDTO.getSenhaAtual(), alterarSenhaDTO.getNovaSenha());
+            usuarioService.alterarUsuario(usuarioId, usuarioDTO);
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build(); // Retorna 400 se algo der errado

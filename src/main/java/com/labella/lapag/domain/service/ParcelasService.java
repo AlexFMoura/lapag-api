@@ -5,6 +5,7 @@ import com.labella.lapag.api.model.ParcelaVencidaDTO;
 import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Parcelamento;
 import com.labella.lapag.domain.model.Parcelas;
+import com.labella.lapag.domain.model.Taxa;
 import com.labella.lapag.domain.repository.ParcelasRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,10 @@ public class ParcelasService {
 
     private final ParcelasRepository parcelasRepository;
     private final PagamentoService pagamentoService;
+    private final TaxaService taxaService;
 
     public List<Parcelas> criarParcela(CriarParcelamentoDTO parcelamentoDTO, Parcelamento parcelamento) {
+        Taxa taxa = taxaService.findDataInativoIsNull().orElseThrow( () -> new NegocioException("Taxa não encontrada!"));
         List<Parcelas> parcelas = new ArrayList<Parcelas>();
         BigDecimal valorParcela = parcelamentoDTO.getValorVenda().divide(
                 new BigDecimal(parcelamentoDTO.getQtdParcela().toString()), 2, RoundingMode.HALF_EVEN);
@@ -35,6 +38,8 @@ public class ParcelasService {
             parcela.setValorParcela(valorParcela.add(diferenca));
             parcela.setParcela(i);
             parcela.setDataVencimento(ajustarParaProximoDiaUtil(montaDataVencimento(i, parcelamentoDTO.getPrimeiroVencimento())));
+            parcela.setMulta(taxa.getMulta());
+            parcela.setJuros(taxa.getJuros());
             diferenca = BigDecimal.ZERO;
 
             parcela.setParcelamento(parcelamento);

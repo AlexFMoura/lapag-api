@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "usuarios")
@@ -36,13 +37,13 @@ public class Usuario {
 
     private LocalDate data_inativo;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "usuario_rota",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "rota_id")
     )
-    private Set<Rota> rotas;
+    private Set<Rota> rotas = new HashSet<>();
 
     public boolean isLoginCorrect(LoginDTO loginDTO, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(loginDTO.getSenha(), this.senha);
