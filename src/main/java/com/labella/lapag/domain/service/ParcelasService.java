@@ -10,6 +10,7 @@ import com.labella.lapag.domain.repository.ParcelasRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,6 +28,7 @@ public class ParcelasService {
     private final PagamentoService pagamentoService;
     private final TaxaService taxaService;
 
+    @Transactional
     public List<Parcelas> criarParcela(CriarParcelamentoDTO parcelamentoDTO, Parcelamento parcelamento) {
         Taxa taxa = taxaService.findDataInativoIsNull().orElseThrow( () -> new NegocioException("Taxa não encontrada!"));
         List<Parcelas> parcelas = new ArrayList<Parcelas>();

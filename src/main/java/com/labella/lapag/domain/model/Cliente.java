@@ -26,7 +26,6 @@ public class Cliente {
     @Size(max = 80, min=3)
     private String nome;
 
-    @NotBlank
     @Size(max = 255)
     @Email
     private String email;
