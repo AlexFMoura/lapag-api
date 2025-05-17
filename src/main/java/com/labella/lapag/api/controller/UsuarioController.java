@@ -5,6 +5,7 @@ import com.labella.lapag.api.model.AlterarSenhaDTO;
 import com.labella.lapag.api.model.ClienteDTO;
 import com.labella.lapag.api.model.ParcelamentoPageDTO;
 import com.labella.lapag.api.model.UsuarioDTO;
+import com.labella.lapag.domain.exception.NegocioException;
 import com.labella.lapag.domain.model.Usuario;
 import com.labella.lapag.domain.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -84,6 +86,14 @@ public class UsuarioController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build(); // Retorna 400 se algo der errado
         }
+    }
+
+    @PutMapping("/esqueceu-senha/{email}")
+    public ResponseEntity<String> esqueceuSenha(
+            @PathVariable String email) {
+
+        usuarioService.esqueceuSenha(email);
+        return ResponseEntity.ok("Senha redefinida com sucesso! Verifique seu e-mail.");
     }
 
 //    @GetMapping("page/")

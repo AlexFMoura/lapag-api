@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.net.URI;
@@ -55,4 +56,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setType(URI.create("https://labellamakes.com/erros/recurso-em-uso"));
         return problemDetail;
     }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ProblemDetail handleResponseStatusException(ResponseStatusException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(e.getStatusCode());
+        problemDetail.setTitle(e.getReason());
+        problemDetail.setType(URI.create("https://labellamakes.com/erros/operacao-nao-permitida"));
+        return problemDetail;
+    }
+
 }

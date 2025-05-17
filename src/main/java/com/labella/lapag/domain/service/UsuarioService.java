@@ -16,9 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -199,5 +201,32 @@ public class UsuarioService {
             log.error("Erro ao salvar usuário", e); // 👈 Isso vai mostrar a stack trace real
             throw e;
         }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void esqueceuSenha(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Email não cadastrado!"));;
+
+        String senhaGerada = gerarSenhaAleatoria();
+        // Criptografa a nova senha
+        String senhaCriptografada = bCryptPasswordEncoder.encode(senhaGerada);
+
+        // Atualiza a senha do usuário no banco de dados
+        usuario.setSenha(senhaCriptografada);
+        usuarioRepository.save(usuario);
+
+        try {
+            emailService.enviarEmail(usuario.getEmail(),
+                    "Sua nova senha",
+                    "Olá " + usuario.getNome() + ", sua senha de acesso é: " + senhaGerada
+            );
+        } catch (Exception e) {
+            // Log do erro de envio de email
+            logger.error("Erro ao enviar e-mail para o usuário " + usuario.getEmail(), e);
+            // Lança uma exceção para garantir o rollback
+            throw new NegocioException("Falha no envio de e-mail, transação revertida.");
+        }
+
     }
 }
