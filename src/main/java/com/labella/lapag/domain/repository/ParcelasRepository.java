@@ -20,8 +20,8 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
     @Query("SELECT p FROM Parcelas p WHERE p.dataVencimento BETWEEN :currentDate AND :futureDate")
     List<Parcelas> findVencemEm30Dias(LocalDate currentDate, LocalDate futureDate);
 
-    @Query("SELECT p FROM Parcelas p WHERE p.dataVencimento < :dataVencimento AND p.dataPagamento IS NULL")
-    Optional<Parcelas> findParcelaVencidaNaoPaga(@Param("dataVencimento") LocalDate dataVencimento);
+    @Query("SELECT p FROM Parcelas p WHERE p.dataVencimento < :dataVencimento AND p.dataPagamento IS NULL AND p.parcelamento.id = :parcelamentoId")
+    Optional<Parcelas> findParcelaVencidaNaoPaga(@Param("dataVencimento") LocalDate dataVencimento, @Param("parcelamentoId") Long parcelamentoId);
 
     @Query("""
         SELECT new com.labella.lapag.api.model.ParcelaVencidaDTO(

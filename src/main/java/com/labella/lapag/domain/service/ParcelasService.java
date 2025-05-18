@@ -7,7 +7,10 @@ import com.labella.lapag.domain.model.Parcelamento;
 import com.labella.lapag.domain.model.Parcelas;
 import com.labella.lapag.domain.model.Taxa;
 import com.labella.lapag.domain.repository.ParcelasRepository;
+import jakarta.persistence.RollbackException;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +27,10 @@ import static com.labella.lapag.domain.Util.DataUtil.ajustarParaProximoDiaUtil;
 @Service
 public class ParcelasService {
 
+    private static final Logger log = LoggerFactory.getLogger(ParcelasService.class);
     private final ParcelasRepository parcelasRepository;
     private final PagamentoService pagamentoService;
+    private final CancelamentoService cancelamentoService;
     private final TaxaService taxaService;
 
     @Transactional
@@ -67,7 +72,7 @@ public class ParcelasService {
 
         Parcelas parcela = parcelasRepository.findById(id).orElseThrow(() -> new NegocioException("Parcela não existente"));
 
-        boolean naoPodeReceber = parcelasRepository.findParcelaVencidaNaoPaga(parcela.getDataVencimento()).isPresent();
+        boolean naoPodeReceber = parcelasRepository.findParcelaVencidaNaoPaga(parcela.getDataVencimento(), parcela.getParcelamento().getId()).isPresent();
 
         if (naoPodeReceber) {
             throw new NegocioException("Existe uma parcela menor em aberta, favor receber ela primeiro!");
@@ -113,5 +118,21 @@ public class ParcelasService {
 
     public List<ParcelaVencidaDTO> buscarParcelasVencidas() {
         return parcelasRepository.findParcelasVencidas();
+    }
+
+    public void cancelaRecebimento(Long id) {
+        Parcelas parcela = parcelasRepository.getReferenceById(id);
+        validaEAlteraDados(parcela);
+        log.info("dados: {}", parcela.toString());
+    }
+
+    @Transactional(rollbackFor = Exception.class )
+    private void validaEAlteraDados(Parcelas parcela) {
+        parcela.setDataPagamento(null);
+        parcela.setFormaPagto(null);
+        parcelasRepository.save(parcela);
+
+        cancelamentoService.verificaSeEstaQuitadoEVolta(parcela);
+
     }
 }

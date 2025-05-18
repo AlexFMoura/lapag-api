@@ -25,6 +25,12 @@ public class ParcelaController {
         return parcelasService.marcarPago(id,formaPagamento);
     }
 
+    @PutMapping("/cancela-recebimento/parcela/{id}")
+    public ResponseEntity<Void> cancelaRecebimento(@PathVariable Long id) {
+        parcelasService.cancelaRecebimento(id);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/vencidas/soma")
     public BigDecimal somarParcelasVencidas() {
         return parcelasService.somarParcelasVencidas();
